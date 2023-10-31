@@ -1,45 +1,39 @@
-/*
-  Blink
+#include <ESP8266WiFi.h>
 
-  Turns an LED on for one second, then off for one second, repeatedly.
+const int phPin = A0; // Analog pin to which the pH sensor is connected
+const int analogRange = 1023; // Analog range of the NodeMCU
 
-  Most Arduinos have an on-board LED you can control. On the UNO, MEGA and ZERO
-  it is attached to digital pin 13, on MKR1000 on pin 6. LED_BUILTIN is set to
-  the correct LED pin independent of which board is used.
-  If you want to know what pin the on-board LED is connected to on your Arduino
-  model, check the Technical Specs of your board at:
-  https://www.arduino.cc/en/Main/Products
+const char* ssid = "Galaxy A139754";
+const char* password = "Jirajira";
 
-  modified 8 May 2014
-  by Scott Fitzgerald
-  modified 2 Sep 2016
-  by Arturo Guadalupi
-  modified 8 Sep 2016
-  by Colby Newman
-
-  This example code is in the public domain.
-
-  https://www.arduino.cc/en/Tutorial/BuiltInExamples/Blink
-*/
-
-int led = 14;
-int brightness = 0;
-int fadeAmount = 5;
-
-// the setup function runs once when you press reset or power the board
 void setup() {
-  pinMode(led, OUTPUT);
+  Serial.begin(115200);
+  connectToWiFi();
 }
 
-// the loop function runs over and over again forever
 void loop() {
-  analogWrite(led, brightness);
-  
-  brightness += fadeAmount;
+  float phValue = readPhValue();
+  Serial.print("pH Value: ");
+  Serial.println(phValue, 2); // Print pH value with 2 decimal places
+  delay(1000); // Read pH every second
+}
 
-  if (brightness <= 0 || brightness >= 255) {
-    fadeAmount = -fadeAmount;
+void connectToWiFi() {
+  Serial.println("Connecting to Wifi...");
+  WiFi.begin(ssid, password);
+
+  while(WiFi.status() != WL_CONNECTED) {
+    delay(1000);
+    Serial.println("Connecting...");
   }
 
-  delay(50);
+  Serial.println("Connected to WiFi");
 }
+
+float readPhValue() {
+  int rawValue = analogRead(phPin);
+  float pHValue = map(rawValue, 0, analogRange, 0, 14); // Map the raw value to pH range
+
+  return pHValue;
+}
+
