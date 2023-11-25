@@ -4,7 +4,7 @@
 const int phPin = A0; // Analog pin to which the pH sensor is connected
 const int analogRange = 1023; // Analog range of the NodeMCU
 
-const char* ssid = "Galaxy A139754";
+const char* ssid = "W";
 const char* password = "Jirajira";
 ESP8266WebServer server(80);
 
